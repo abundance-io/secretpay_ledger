@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "propspace_ledger_backend": {
+      "main": "src/propspace_ledger_backend/main.mo",
+      "type": "motoko"
+    },
+    "propspace_ledger_frontend": {
+      "dependencies": [
+        "propspace_ledger_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/propspace_ledger_frontend/src/index.html"
+      },
+      "source": [
+        "src/propspace_ledger_frontend/assets",
+        "dist/propspace_ledger_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
