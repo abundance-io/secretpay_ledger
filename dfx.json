@@ -1,21 +1,14 @@
 {
   "canisters": {
-    "propspace_ledger_backend": {
-      "main": "src/propspace_ledger_backend/main.mo",
-      "type": "motoko"
-    },
-    "propspace_ledger_frontend": {
-      "dependencies": [
-        "propspace_ledger_backend"
-      ],
-      "frontend": {
-        "entrypoint": "src/propspace_ledger_frontend/src/index.html"
-      },
-      "source": [
-        "src/propspace_ledger_frontend/assets",
-        "dist/propspace_ledger_frontend/"
-      ],
-      "type": "assets"
+    "propspace_ledger": {
+      "type": "custom",
+      "candid": "https://raw.githubusercontent.com/dfinity/ic/d87954601e4b22972899e9957e800406a0a6b929/rs/rosetta-api/icp_ledger/ledger.did",
+      "wasm": "https://download.dfinity.systems/ic/d87954601e4b22972899e9957e800406a0a6b929/canisters/ledger-canister.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        }
+      }
     }
   },
   "defaults": {
