@@ -120,6 +120,6 @@ dfx canister call secretpay_ledger_canister setTransferFee <new_fee_amount>
 ```
 
 Access the Candid UI at the deployed URL:
-http://127.0.0.1:4943/?canisterId=<CANISTER_ID>&id=ryjl3-tyaaa-aaaaa-aaaba-cai
+`http://127.0.0.1:4943/?canisterId=<CANISTER_ID>&id=ryjl3-tyaaa-aaaaa-aaaba-cai`
 
 ---
