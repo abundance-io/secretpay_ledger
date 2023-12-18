@@ -1,59 +1,128 @@
-# secret santa
+Absolutely, I'll help tailor this readme for the secretpay_ledger repository. Let's add commands that relate specifically to SecretPay and modify the naming conventions accordingly.
 
-Welcome to your new secret santa project and to the internet computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+---
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+## SecretPay Ledger Repository
 
-To learn more before you start working with propspace_ledger, see the following documentation available online:
+### Overview
+The SecretPay Ledger repository contains the necessary canister to run the ledger for the SecretPay application locally, enabling anonymous sending of gift cards with money through the ICP blockchain.
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
-- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
+### Installation Instructions
 
-If you want to start working on your project right away, you might want to try the following commands:
+#### Step 1: Install IC SDK
+Ensure you have a recent version of the IC SDK installed. If not, follow the instructions in the IC SDK installation section.
 
+#### Step 2: Create a New DFX Project
 ```bash
-cd propspace_ledger/
-dfx help
-dfx canister --help
+dfx new secretpay_ledger_canister
+cd secretpay_ledger_canister
 ```
 
-## Running the project locally
+#### Step 3: Determine Ledger File Locations
+Access the releases overview and copy the latest replica binary revision. For instance, the revision could be `d87954601e4b22972899e9957e800406a0a6b929`.
 
-If you want to test your project locally, you can use the following commands:
+- **Ledger Wasm Module URL:** [Download Link](https://download.dfinity.systems/ic/<REVISION>/canisters/ledger-canister.wasm.gz)
+- **Ledger .did File URL:** [Raw File Link](https://raw.githubusercontent.com/dfinity/ic/<REVISION>/rs/rosetta-api/icp_ledger/ledger.did)
 
+[OPTIONAL] For the latest ICP ledger files:
 ```bash
-# Starts the replica, running in the background
-dfx start --background
-
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
+curl -o download_latest_icp_ledger.sh "<DOWNLOAD_SCRIPT_LINK>"
+chmod +x download_latest_icp_ledger.sh
+./download_latest_icp_ledger.sh
 ```
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+#### Step 4: Configure dfx.json File
+Modify the `dfx.json` file in your project directory with the provided content in the repository.
 
-If you have made changes to your backend canister, you can generate a new candid interface with
-
+#### Step 5: Start a Local Replica
 ```bash
-npm run generate
+dfx start --background --clean
 ```
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
-
-If you are making frontend changes, you can start a development server with
-
+#### Step 6: Create a Minting Account Identity
 ```bash
-npm start
+dfx identity new secretpay_minter
+dfx identity use secretpay_minter
+export MINTER_ACCOUNT_ID=$(dfx ledger account-id)
 ```
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
+#### Step 7: Record Default Identity's Ledger Account Identifier
+```bash
+dfx identity use default
+export DEFAULT_ACCOUNT_ID=$(dfx ledger account-id)
+```
 
-### Note on frontend environment variables
+#### Step 8: Deploy the Ledger Canister for SecretPay
+```bash
+dfx deploy --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai secretpay_ledger_canister --argument "
+  (variant {
+    Init = record {
+      minting_account = \"$MINTER_ACCOUNT_ID\";
+      initial_values = vec {
+        record {
+          \"$DEFAULT_ACCOUNT_ID\";
+          record {
+            e8s = 10_000_000_000 : nat64;
+          };
+        };
+      };
+      send_whitelist = vec {};
+      transfer_fee = opt record {
+        e8s = 10_000 : nat64;
+      };
+      token_symbol = opt \"SEC\";
+      token_name = opt \"Secret Coin\";
+    }
+  })
+"
+```
 
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
+#### Step 9: Interact with the SecretPay Canister
+Run CLI commands to interact with the canister:
+```bash
+dfx canister call secretpay_ledger_canister name
+```
+Here are some functions that you can run on the `secretpay_ledger_canister`:
 
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+### Available Functions
+
+#### 1. **Get Token Name**
+Retrieve the token's name.
+```bash
+dfx canister call secretpay_ledger_canister name
+```
+
+#### 2. **Get Token Symbol**
+Fetch the token's symbol.
+```bash
+dfx canister call secretpay_ledger_canister symbol
+```
+
+#### 3. **Get Account Balance**
+Check the balance of a specific account.
+```bash
+dfx canister call secretpay_ledger_canister getBalance <account_id>
+```
+
+#### 4. **Transfer Tokens**
+Initiate a token transfer from one account to another.
+```bash
+dfx canister call secretpay_ledger_canister transfer <to_account_id> <amount>
+```
+
+#### 5. **Add to Whitelist**
+Add an account to the send whitelist.
+```bash
+dfx canister call secretpay_ledger_canister addToWhitelist <account_id>
+```
+
+#### 6. **Set Transfer Fee**
+Modify the transfer fee for transactions.
+```bash
+dfx canister call secretpay_ledger_canister setTransferFee <new_fee_amount>
+```
+
+Access the Candid UI at the deployed URL:
+[Local Deployment Candid UI](http://127.0.0.1:4943/?canisterId=<CANISTER_ID>&id=ryjl3-tyaaa-aaaaa-aaaba-cai)
+
+---
