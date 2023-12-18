@@ -1,6 +1,3 @@
-Absolutely, I'll help tailor this readme for the secretpay_ledger repository. Let's add commands that relate specifically to SecretPay and modify the naming conventions accordingly.
-
----
 
 ## SecretPay Ledger Repository
 
