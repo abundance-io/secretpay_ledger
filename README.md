@@ -9,9 +9,9 @@ The SecretPay Ledger repository contains the necessary canister to run the ledge
 #### Step 1: Install IC SDK
 Ensure you have a recent version of the IC SDK installed. If not, follow the instructions in the IC SDK installation section.
 
-#### Step 2: Create a New DFX Project
+#### Step 2: Clone the secretpay_ledger repository
 ```bash
-dfx new secretpay_ledger_canister
+git clone https://github.com/abundance-io/secretpay_ledger
 cd secretpay_ledger_canister
 ```
 
@@ -28,8 +28,8 @@ chmod +x download_latest_icp_ledger.sh
 ./download_latest_icp_ledger.sh
 ```
 
-#### Step 4: Configure dfx.json File
-Modify the `dfx.json` file in your project directory with the provided content in the repository.
+#### Step 4: Configure dfx.json File [OPTIONAL]
+Modify the `dfx.json` file to change canister name or settings .
 
 #### Step 5: Start a Local Replica
 ```bash
